@@ -25,3 +25,74 @@ def loadDataB(path):
 
     return zadania
 
+def IA(zad):
+    wyspy = []
+    populacja = []
+    iloscWysp = 5
+    wielkoscPopulacji = 50
+    liczbaEpok = 100
+
+    for i in range(0, iloscWysp):
+        for j in range(0, wielkoscPopulacji):
+            populacja.append(np.random.permutation(zad))
+        wyspy.append(populacja)
+        populacja.clear()
+
+    for i in range(0, liczbaEpok):
+        akcjaNaWyspie(wyspy)
+        if not i % 4:
+            migracjeNaWyspy(wyspy)
+
+def akcjaNaWyspie(wyspy):
+    krzyzowanie(wyspy)
+    mutacje(wyspy)
+
+def krzyzowanie(wyspy):
+    nowaPopulacja = []
+
+    for wyspa in wyspy:
+        for indeks in range(0, len(wyspa)):
+            if indeks == 0:
+                nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks], wyspa[-1]))
+                nowaPopulacja.append(krzyzujOsobniki(wyspa[-1], wyspa[indeks]))
+            else:
+                nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks-1], wyspa[indeks]))
+                nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks], wyspa[indeks-1]))
+        
+        wyspa = copy.deepcopy(nowaPopulacja)
+        nowaPopulacja.clear()
+        # Czy na pewno podmieniaja sie wyzsze wyspy? Czy trzeba return?
+
+def krzyzujOsobniki(populacja1, populacja2):
+    pass
+
+def mutacje(wyspy):
+    procentMutacji = 0.03
+    for wyspa in wyspy:
+        for indeks in range(0, len(wyspa)):
+            prawdopodobienstwoMutacji = random.random()
+            if prawdopodobienstwoMutacji <= procentMutacji:
+                gen1 = random.randint(0, len(wyspa[0])-1)
+                gen2 = random.randint(0, len(wyspa[0])-1)
+                moveSwap(wyspa[indeks], gen1, gen2)
+
+        # Czy na pewno podmieniaja sie wyzsze wyspy? Czy trzeba return?
+
+def moveSwap(osobnik, i, j):
+    osobnik[i], osobnik[j] = osobnik[j], osobnik[i]
+
+def migracjeNaWyspy(wyspy):
+    iloscEmigrantow = 2
+
+    for indeks, wyspa in enumerate(wyspy):
+        for i in range(0, iloscEmigrantow):
+            numerOsobnika = random.randint(0, len(wyspa)-1)
+            moveSwapPomiedzyWyspami(wyspy[indeks], wyspy[indeks-1], numerOsobnika)
+            numerOsobnika = random.randint(0, len(wyspa)-1)
+            if indeks+1 > len(wyspy):
+                moveSwapPomiedzyWyspami(wyspy[indeks], wyspy[0], numerOsobnika)
+            else:
+                moveSwapPomiedzyWyspami(wyspy[indeks], wyspy[indeks+1], numerOsobnika)
+
+def moveSwapPomiedzyWyspami(wyspa1, wyspa2, numerOsobnika):
+    wyspa1[numerOsobnika], wyspa2[numerOsobnika] = wyspa2[numerOsobnika], wyspa1[numerOsobnika]
