@@ -7,7 +7,7 @@ import numpy as np
 import random
 
 
-def loadDataB(path):
+def zaladujDane(path):
     plik = open(path, "r")
     linie = plik.readlines()
     n = int(linie[1].split()[0])
@@ -67,7 +67,7 @@ def IA(zad):
     for i in range(0, iloscWysp):
         for j in range(0, wielkoscPopulacji):
             populacja.append(np.random.permutation(zad))
-        wyspy.append(populacja)
+        wyspy.append(copy.deepcopy(populacja))
         populacja.clear()
 
     for i in range(0, liczbaEpok):
@@ -99,10 +99,14 @@ def krzyzowanie(wyspy):
 
 def krzyzujOsobniki(osobnik1, osobnik2):
     nowyOsobnik = []
-    for i in range(0, len(osobnik1)/2):
+    for i in range(0, len(osobnik1)//2):
         nowyOsobnik.append(osobnik1[i])
     for i in range(0, len(osobnik2)):
-        if osobnik2[i] not in nowyOsobnik:
+        czyWystepujeGen = False
+        for j in range(0, len(nowyOsobnik)):
+            if osobnik2[i][-1] == nowyOsobnik[j][-1]:
+                czyWystepujeGen = True
+        if czyWystepujeGen == False:
             nowyOsobnik.append(osobnik2[i])
 
     return nowyOsobnik
@@ -130,7 +134,7 @@ def migracjeNaWyspy(wyspy):
             numerOsobnika = random.randint(0, len(wyspa)-1)
             moveSwapPomiedzyWyspami(wyspy[indeks], wyspy[indeks-1], numerOsobnika)
             numerOsobnika = random.randint(0, len(wyspa)-1)
-            if indeks+1 > len(wyspy):
+            if indeks >= len(wyspy)-1:
                 moveSwapPomiedzyWyspami(wyspy[indeks], wyspy[0], numerOsobnika)
             else:
                 moveSwapPomiedzyWyspami(wyspy[indeks], wyspy[indeks+1], numerOsobnika)
@@ -150,3 +154,9 @@ def znajdzNajlepszegoOsobnika(wyspy):
                 najlepszyOsobnik = osobnik
     
     return najlepszyOsobnik
+
+
+# - - - MAIN - - - #
+
+zadania = zaladujDane("dataB/ta111.txt")
+print(calculate_Cmax(IA(zadania)))
