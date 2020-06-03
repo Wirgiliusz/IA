@@ -25,6 +25,38 @@ def loadDataB(path):
 
     return zadania
 
+def calculate_Cmax(zad):
+    if len(zad) == 0:
+        return math.inf
+
+    S = []
+    C = []
+    Szad = []
+    Czad = []
+
+    Szad.append(0)
+    Czad.append(zad[0][0])
+
+    for i in range(0, len(zad)):
+        for j in range(0, len(zad[i])-1):
+            if i == 0 and j != 0:
+                Szad.append(Czad[j-1])
+                Czad.append(Szad[j] + zad[i][j])
+            elif i != 0:
+                if j == 0:
+                    Szad.append(C[i-1][0])
+                    Czad.append(Szad[0] + zad[i][0])
+                else:
+                    Szad.append(max(Czad[j-1], C[i-1][j]))
+                    Czad.append(Szad[j] + zad[i][j])
+
+        S.append(Szad.copy())
+        C.append(Czad.copy())
+        Szad.clear()
+        Czad.clear()
+
+    return C[-1][-1]
+
 def IA(zad):
     wyspy = []
     populacja = []
@@ -42,6 +74,8 @@ def IA(zad):
         akcjaNaWyspie(wyspy)
         if not i % 4:
             migracjeNaWyspy(wyspy)
+
+    return znajdzNajlepszegoOsobnika(wyspy)
 
 def akcjaNaWyspie(wyspy):
     krzyzowanie(wyspy)
@@ -63,8 +97,15 @@ def krzyzowanie(wyspy):
         nowaPopulacja.clear()
         # Czy na pewno podmieniaja sie wyzsze wyspy? Czy trzeba return?
 
-def krzyzujOsobniki(populacja1, populacja2):
-    pass
+def krzyzujOsobniki(osobnik1, osobnik2):
+    nowyOsobnik = []
+    for i in range(0, len(osobnik1)/2):
+        nowyOsobnik.append(osobnik1[i])
+    for i in range(0, len(osobnik2)):
+        if osobnik2[i] not in nowyOsobnik:
+            nowyOsobnik.append(osobnik2[i])
+
+    return nowyOsobnik
 
 def mutacje(wyspy):
     procentMutacji = 0.03
@@ -96,3 +137,16 @@ def migracjeNaWyspy(wyspy):
 
 def moveSwapPomiedzyWyspami(wyspa1, wyspa2, numerOsobnika):
     wyspa1[numerOsobnika], wyspa2[numerOsobnika] = wyspa2[numerOsobnika], wyspa1[numerOsobnika]
+
+def znajdzNajlepszegoOsobnika(wyspy):
+    Cmin = math.inf
+    najlepszyOsobnik = None
+
+    for wyspa in wyspy:
+        for osobnik in wyspa:
+            C = calculate_Cmax(osobnik)
+            if C < Cmin:
+                Cmin = C
+                najlepszyOsobnik = osobnik
+    
+    return najlepszyOsobnik
