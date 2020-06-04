@@ -102,7 +102,7 @@ def IA(zad):
     wyspy = []
     populacja = []
     iloscWysp = 5
-    wielkoscPopulacji = 50
+    wielkoscPopulacji = 20
     liczbaEpok = 100
 
     for i in range(0, iloscWysp):
@@ -135,7 +135,6 @@ def krzyzowanie(wyspy):
     for wyspa in wyspy:
         for indeks in range(0, len(wyspa)):
             nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks-1], wyspa[indeks]))
-            nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks], wyspa[indeks-1]))
         
         wyspa = sortCmax(wyspa)
         nowaPopulacja = sortCmax(nowaPopulacja)
@@ -161,11 +160,9 @@ def krzyzujOsobniki(osobnik1, osobnik2):
     nowyOsobnik = [None] * len(osobnik1)
     punkt1 = len(osobnik1)//4
     punkt2 = (len(osobnik1)//4)*3
-    if len(osobnik1) != len(osobnik2) != len(nowyOsobnik):
-        print("BŁĄD DŁUGOŚCI OSOBNIKÓW")
 
     for i in range(punkt1, punkt2):
-        nowyOsobnik[i] = osobnik1[i]
+        nowyOsobnik[i] = copy.deepcopy(osobnik1[i])
 
     indeks = 0
     for i in range(0, len(osobnik2)):
@@ -174,9 +171,10 @@ def krzyzujOsobniki(osobnik1, osobnik2):
             if osobnik2[i][-1] == osobnik1[j][-1]:
                 czyWystepujeGen = True
         if czyWystepujeGen == False:
-            #print("indeks: ", indeks)
-            nowyOsobnik[indeks] = osobnik2[i]
+            nowyOsobnik[indeks] = copy.deepcopy(osobnik2[i])
             indeks += 1
+            if indeks == len(osobnik2):
+                return nowyOsobnik
             if indeks == punkt1:
                 indeks = punkt2
 
@@ -193,7 +191,12 @@ def mutacje(wyspy):
                 moveSwap(wyspa[indeks], gen1, gen2)
 
 def moveSwap(osobnik, i, j):
-    osobnik[i], osobnik[j] = osobnik[j], osobnik[i]
+    #print("Przed mutacja: ", osobnik)
+    temp = copy.deepcopy(osobnik[i])
+    osobnik[i] = copy.deepcopy(osobnik[j])
+    osobnik[j] = copy.deepcopy(temp)
+    #osobnik[i], osobnik[j] = osobnik[j], osobnik[i]
+    #print("Po mutacji: ", osobnik)
 
 def migracjeNaWyspy(wyspy):
     iloscEmigrantow = 2
