@@ -61,24 +61,30 @@ def IA(zad):
     wyspy = []
     populacja = []
     iloscWysp = 5
-    wielkoscPopulacji = 50
+    wielkoscPopulacji = 10
     liczbaEpok = 100
 
     for i in range(0, iloscWysp):
+        print("Nowa wyspa nr ", i+1)
         for j in range(0, wielkoscPopulacji):
             populacja.append(np.random.permutation(zad))
         wyspy.append(copy.deepcopy(populacja))
         populacja.clear()
 
+    print("Pomiedzy")
     for i in range(0, liczbaEpok):
+        print("-> Epoka nr ", i+1)
         akcjaNaWyspie(wyspy)
         if not i % 4:
+            print("Migracja")
             migracjeNaWyspy(wyspy)
 
     return znajdzNajlepszegoOsobnika(wyspy)
 
 def akcjaNaWyspie(wyspy):
-    krzyzowanie(wyspy)
+    print("Krzyzowanie")
+    wyspy = krzyzowanie(wyspy)
+    print("Mutacje")
     mutacje(wyspy)
 
 def krzyzowanie(wyspy):
@@ -86,16 +92,13 @@ def krzyzowanie(wyspy):
 
     for wyspa in wyspy:
         for indeks in range(0, len(wyspa)):
-            if indeks == 0:
-                nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks], wyspa[-1]))
-                nowaPopulacja.append(krzyzujOsobniki(wyspa[-1], wyspa[indeks]))
-            else:
-                nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks-1], wyspa[indeks]))
-                nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks], wyspa[indeks-1]))
+            nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks-1], wyspa[indeks]))
+            nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks], wyspa[indeks-1]))
         
         wyspa = copy.deepcopy(nowaPopulacja)
         nowaPopulacja.clear()
-        # Czy na pewno podmieniaja sie wyzsze wyspy? Czy trzeba return?
+
+    return wyspy
 
 def krzyzujOsobniki(osobnik1, osobnik2):
     nowyOsobnik = []
@@ -120,8 +123,6 @@ def mutacje(wyspy):
                 gen1 = random.randint(0, len(wyspa[0])-1)
                 gen2 = random.randint(0, len(wyspa[0])-1)
                 moveSwap(wyspa[indeks], gen1, gen2)
-
-        # Czy na pewno podmieniaja sie wyzsze wyspy? Czy trzeba return?
 
 def moveSwap(osobnik, i, j):
     osobnik[i], osobnik[j] = osobnik[j], osobnik[i]
@@ -158,5 +159,6 @@ def znajdzNajlepszegoOsobnika(wyspy):
 
 # - - - MAIN - - - #
 
-zadania = zaladujDane("dataB/ta111.txt")
+zadania = zaladujDane("dataB/ta011.txt")
+#print(calculate_Cmax(copy.deepcopy(zadania)))
 print(calculate_Cmax(IA(zadania)))
