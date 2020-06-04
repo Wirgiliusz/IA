@@ -60,7 +60,7 @@ def calculate_Cmax(zad):
 def IA(zad):
     wyspy = []
     populacja = []
-    iloscWysp = 10
+    iloscWysp = 5
     wielkoscPopulacji = 10
     liczbaEpok = 100
 
@@ -116,16 +116,24 @@ def sortCmax(wyspa):
             return wyspa
 
 def krzyzujOsobniki(osobnik1, osobnik2):
-    nowyOsobnik = []
-    for i in range(0, len(osobnik1)//2):
-        nowyOsobnik.append(osobnik1[i])
+    nowyOsobnik = [None] * len(osobnik1)
+    punkt1 = len(osobnik1)//4
+    punkt2 = (len(osobnik1)//4)*3
+
+    for i in range(punkt1, punkt2):
+        nowyOsobnik[i] = osobnik1[i]
+
+    indeks = 0
     for i in range(0, len(osobnik2)):
         czyWystepujeGen = False
-        for j in range(0, len(nowyOsobnik)):
-            if osobnik2[i][-1] == nowyOsobnik[j][-1]:
+        for j in range(punkt1, punkt2):
+            if osobnik2[i][-1] == osobnik1[j][-1]:
                 czyWystepujeGen = True
         if czyWystepujeGen == False:
-            nowyOsobnik.append(osobnik2[i])
+            nowyOsobnik[indeks] = osobnik2[i]
+            indeks += 1
+            if indeks == punkt1:
+                indeks = punkt2
 
     return nowyOsobnik
 
