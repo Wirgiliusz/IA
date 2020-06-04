@@ -161,6 +161,8 @@ def krzyzujOsobniki(osobnik1, osobnik2):
     nowyOsobnik = [None] * len(osobnik1)
     punkt1 = len(osobnik1)//4
     punkt2 = (len(osobnik1)//4)*3
+    if len(osobnik1) != len(osobnik2) != len(nowyOsobnik):
+        print("BŁĄD DŁUGOŚCI OSOBNIKÓW")
 
     for i in range(punkt1, punkt2):
         nowyOsobnik[i] = osobnik1[i]
@@ -225,6 +227,6 @@ def znajdzNajlepszegoOsobnika(wyspy):
 
 # - - - MAIN - - - #
 
-zadania = zaladujDane("dataB/ta111.txt")
+zadania = zaladujDane("dataB/ta011.txt")
 #print(calculate_Cmax(copy.deepcopy(zadania)))
 print(calculate_Cmax(IA(zadania)))
