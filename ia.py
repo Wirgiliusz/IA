@@ -60,7 +60,7 @@ def calculate_Cmax(zad):
 def IA(zad):
     wyspy = []
     populacja = []
-    iloscWysp = 5
+    iloscWysp = 10
     wielkoscPopulacji = 10
     liczbaEpok = 100
 
@@ -95,10 +95,25 @@ def krzyzowanie(wyspy):
             nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks-1], wyspa[indeks]))
             nowaPopulacja.append(krzyzujOsobniki(wyspa[indeks], wyspa[indeks-1]))
         
-        wyspa = copy.deepcopy(nowaPopulacja)
+        wyspa = sortCmax(wyspa)
+        nowaPopulacja = sortCmax(nowaPopulacja)
+        for i in range(len(wyspa)//5, len(wyspa)):
+            wyspa[i] = nowaPopulacja[i-len(wyspa)//5]
+
         nowaPopulacja.clear()
 
     return wyspy
+
+def sortCmax(wyspa):
+    while True:
+        zmiana = False
+        for j in range(0, len(wyspa)-1):
+            if calculate_Cmax(wyspa[j]) > calculate_Cmax(wyspa[j+1]):
+                wyspa[j], wyspa[j+1] = wyspa[j+1], wyspa[j]
+                zmiana = True
+
+        if zmiana == False:
+            return wyspa
 
 def krzyzujOsobniki(osobnik1, osobnik2):
     nowyOsobnik = []
