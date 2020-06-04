@@ -57,17 +57,59 @@ def calculate_Cmax(zad):
 
     return C[-1][-1]
 
+def NEH(zad):
+    k = 1
+    W = []
+    pistar = []
+    pi = []
+
+    for zadanie in zad:
+        sumaP = 0
+        for i in range(0, len(zadanie)-1):
+            sumaP += zadanie[i]
+        W.append([sumaP, zadanie[-1]]) 
+    Wsorted = sortP(W)
+
+    while(len(W) != 0):
+        idxMaxP = Wsorted[-1][1] - 1
+        zadMaxP = zad[idxMaxP]
+        for l in range(0, k):
+            pi.insert(l, zadMaxP)
+            if l == 0:
+                pistar.insert(l, zadMaxP)
+            if(calculate_Cmax(copy.deepcopy(pi)) < calculate_Cmax(copy.deepcopy(pistar))):
+                pistar = copy.deepcopy(pi)
+            pi.pop(l)
+
+        pi = copy.deepcopy(pistar)
+        Wsorted.pop()
+        k += 1
+
+    return pistar
+
+def sortP(tabSumP):
+    while True:
+        zmiana = False
+        for j in range(0, len(tabSumP)-1):
+            if tabSumP[j][0] > tabSumP[j+1][0]:
+                tabSumP[j], tabSumP[j+1] = tabSumP[j+1], tabSumP[j]
+                zmiana = True
+
+        if zmiana == False:
+            return tabSumP
+
 def IA(zad):
     wyspy = []
     populacja = []
     iloscWysp = 5
-    wielkoscPopulacji = 10
+    wielkoscPopulacji = 50
     liczbaEpok = 100
 
     for i in range(0, iloscWysp):
         print("Nowa wyspa nr ", i+1)
-        for j in range(0, wielkoscPopulacji):
+        for j in range(0, wielkoscPopulacji-1):
             populacja.append(np.random.permutation(zad))
+        populacja.append(NEH(copy.deepcopy(zad)))
         wyspy.append(copy.deepcopy(populacja))
         populacja.clear()
 
@@ -130,6 +172,7 @@ def krzyzujOsobniki(osobnik1, osobnik2):
             if osobnik2[i][-1] == osobnik1[j][-1]:
                 czyWystepujeGen = True
         if czyWystepujeGen == False:
+            #print("indeks: ", indeks)
             nowyOsobnik[indeks] = osobnik2[i]
             indeks += 1
             if indeks == punkt1:
@@ -182,6 +225,6 @@ def znajdzNajlepszegoOsobnika(wyspy):
 
 # - - - MAIN - - - #
 
-zadania = zaladujDane("dataB/ta011.txt")
+zadania = zaladujDane("dataB/ta111.txt")
 #print(calculate_Cmax(copy.deepcopy(zadania)))
 print(calculate_Cmax(IA(zadania)))
